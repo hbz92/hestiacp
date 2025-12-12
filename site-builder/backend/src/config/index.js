@@ -7,6 +7,9 @@
  * Utilise les variables d'environnement avec des valeurs par défaut.
  */
 
+// Charger dotenv en premier (au cas où ce fichier est importé avant server.js)
+require('dotenv').config();
+
 module.exports = {
   // Configuration du serveur
   server: {
