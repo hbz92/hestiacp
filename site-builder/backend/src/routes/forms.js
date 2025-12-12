@@ -15,7 +15,6 @@
  */
 
 const express = require('express');
-const router = express.Router();
 
 const formController = require('../controllers/formController');
 const { authenticate, authorizeProjectOwner } = require('../middleware/auth');
@@ -24,24 +23,16 @@ const { authenticate, authorizeProjectOwner } = require('../middleware/auth');
 // ROUTE PUBLIQUE (soumission de formulaire)
 // ===========================================
 
+const publicRouter = express.Router();
+
 /**
  * POST /api/forms/submit
  * Endpoint public pour recevoir les soumissions de formulaires
- * 
- * Body:
- * - project_id: string (requis)
- * - form_id: string (optionnel)
- * - form_name: string (optionnel)
- * - page_slug: string (optionnel)
- * - data: object (les champs du formulaire)
  */
-router.post('/submit', formController.submitForm);
-
-module.exports = router;
-
+publicRouter.post('/submit', formController.submitForm);
 
 // ===========================================
-// ROUTES ADMIN (séparées, montées sous /projects/:projectId)
+// ROUTES ADMIN (montées sous /projects/:projectId/forms)
 // ===========================================
 
 const adminRouter = express.Router({ mergeParams: true });
@@ -79,5 +70,8 @@ adminRouter.put('/submissions/:submissionId', authorizeProjectOwner, formControl
  */
 adminRouter.delete('/submissions/:submissionId', authorizeProjectOwner, formController.deleteSubmission);
 
-module.exports.publicRouter = router;
-module.exports.adminRouter = adminRouter;
+// Export des deux routers
+module.exports = {
+  publicRouter,
+  adminRouter
+};

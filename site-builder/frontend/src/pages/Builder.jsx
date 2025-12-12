@@ -78,7 +78,7 @@ function Builder() {
         const id = projectId || contextProject?.id;
         
         if (!id) {
-          navigate('/builder/error?message=Aucun projet sélectionné');
+          navigate('/error?message=Aucun projet sélectionné');
           return;
         }
 

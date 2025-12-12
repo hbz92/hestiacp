@@ -4,6 +4,8 @@
  * ===========================================
  * 
  * Gère le routage et l'état d'authentification global.
+ * Note: Le basename="/builder" est défini dans main.jsx
+ * Donc toutes les routes ici sont relatives à /builder
  */
 
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -102,9 +104,9 @@ function App() {
         {/* Page d'erreur */}
         <Route path="/error" element={<ErrorPage />} />
         
-        {/* Builder principal */}
+        {/* Builder principal - route relative à /builder */}
         <Route 
-          path="/builder/:projectId?" 
+          path="/edit/:projectId" 
           element={
             user ? (
               <Builder />
@@ -114,15 +116,27 @@ function App() {
           } 
         />
         
-        {/* Redirection par défaut */}
+        {/* Route avec juste l'ID du projet */}
+        <Route 
+          path="/:projectId" 
+          element={
+            user ? (
+              <Builder />
+            ) : (
+              <Navigate to="/error?message=Non authentifié" replace />
+            )
+          } 
+        />
+        
+        {/* Page d'accueil - redirection vers le projet ou message */}
         <Route 
           path="/" 
           element={
             user && project ? (
-              <Navigate to={`/builder/${project.id}`} replace />
+              <Navigate to={`/${project.id}`} replace />
             ) : (
               <div className="min-h-screen flex items-center justify-center bg-gray-100">
-                <div className="text-center">
+                <div className="text-center p-8">
                   <h1 className="text-2xl font-bold text-gray-800 mb-4">
                     HestiaCP Site Builder
                   </h1>

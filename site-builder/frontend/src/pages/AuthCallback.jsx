@@ -5,6 +5,8 @@
  * 
  * Reçoit le token et l'ID du projet depuis l'URL
  * après redirection du backend SSO.
+ * 
+ * Note: Les routes sont relatives à /builder (basename)
  */
 
 import { useEffect, useContext, useState } from 'react';
@@ -25,6 +27,9 @@ function AuthCallback() {
       const token = searchParams.get('token');
       const projectId = searchParams.get('projectId');
 
+      console.log('AuthCallback - Token reçu:', token ? 'oui' : 'non');
+      console.log('AuthCallback - ProjectId:', projectId);
+
       if (!token) {
         setError('Token d\'authentification manquant');
         return;
@@ -41,6 +46,9 @@ function AuthCallback() {
         if (response.data.success) {
           const { user, projects } = response.data.data;
           
+          console.log('AuthCallback - User:', user);
+          console.log('AuthCallback - Projects:', projects);
+          
           // Trouver le projet spécifié ou prendre le premier
           let project = null;
           if (projectId) {
@@ -53,8 +61,10 @@ function AuthCallback() {
           // Connecter l'utilisateur
           login(token, user, project);
 
-          // Rediriger vers le builder
-          navigate(`/builder/${project?.id || ''}`, { replace: true });
+          // Rediriger vers le builder (sans /builder car c'est le basename)
+          const targetPath = project?.id ? `/${project.id}` : '/';
+          console.log('AuthCallback - Redirection vers:', targetPath);
+          navigate(targetPath, { replace: true });
         } else {
           setError('Erreur lors de la récupération des données utilisateur');
         }
@@ -81,7 +91,7 @@ function AuthCallback() {
           </h1>
           <p className="text-gray-600 mb-4">{error}</p>
           <a
-            href="/"
+            href="/builder/"
             className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Retour à l'accueil

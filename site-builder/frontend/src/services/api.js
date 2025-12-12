@@ -53,6 +53,7 @@ api.interceptors.response.use(
       setAuthToken(null);
       
       if (!window.location.pathname.includes('/auth')) {
+        // Utilise le basename /builder
         window.location.href = '/builder/error?message=Session expirée';
       }
     }
